@@ -56,6 +56,8 @@ zvm_after_init_commands+=('source $HOMEBREW_PREFIX/opt/zsh-fast-syntax-highlight
 zvm_after_init_commands+=('source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh')
 source $HOMEBREW_PREFIX/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 autoload -Uz add-zsh-hook
+eval "$(zoxide init zsh)"
+
 
 # sdkman
 export SDKMAN_DIR="$HOME/.sdkman"
