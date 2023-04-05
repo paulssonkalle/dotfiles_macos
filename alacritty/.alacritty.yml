@@ -15,7 +15,7 @@ font:
     style: Regular
   bold_italic:
     style: Italic
-  size: 14.0
+  size: 16.0
 
 import:
   - ~/.config/alacritty/catppuccin/catppuccin-macchiato.yml

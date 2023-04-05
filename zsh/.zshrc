@@ -9,9 +9,9 @@ setopt HIST_SAVE_NO_DUPS
 setopt HIST_VERIFY
 
 # misc options
-setopt CORRECT
 unsetopt beep
 bindkey -e
+
 
 # completion
 autoload -Uz compinit
@@ -51,13 +51,21 @@ _zsh_autosuggest_strategy_histdb_top() {
 ZSH_AUTOSUGGEST_STRATEGY=histdb_top
 HISTDB_TABULATE_CMD=(sed -e $'s/\x1f/\t/g') # needed on macos for zsh-histdb
 source $HOME/.zsh/zsh-histdb/sqlite-history.zsh
-zvm_after_init_commands+=('[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh')
-zvm_after_init_commands+=('source $HOMEBREW_PREFIX/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh')
-zvm_after_init_commands+=('source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh')
+
+function init_after_vim_mode_plugin() {
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+  source $HOMEBREW_PREFIX/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+  source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+  zle -N fzf-cd-widget
+  bindkey -M emacs '\C-w' fzf-cd-widget
+  bindkey -M vicmd '\C-w' fzf-cd-widget
+  bindkey -M viins '\C-w' fzf-cd-widget
+}
+zvm_after_init_commands+=(init_after_vim_mode_plugin)
+
 source $HOMEBREW_PREFIX/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 autoload -Uz add-zsh-hook
 eval "$(zoxide init zsh)"
-
 
 # sdkman
 export SDKMAN_DIR="$HOME/.sdkman"
