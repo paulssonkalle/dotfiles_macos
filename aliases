@@ -13,3 +13,4 @@ alias ll='ls -lahF'
 alias lls='ls -lahFtr'
 alias la='ls -A'
 alias lc='ls -CF'
+alias python="python3"

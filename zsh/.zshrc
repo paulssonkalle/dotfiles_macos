@@ -1,17 +1,17 @@
 # history options
-setopt SHARE_HISTORY
-setopt HIST_EXPIRE_DUPS_FIRST
-setopt HIST_IGNORE_DUPS
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_FIND_NO_DUPS
-setopt HIST_IGNORE_SPACE
-setopt HIST_SAVE_NO_DUPS
-setopt HIST_VERIFY
+setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
+setopt SHARE_HISTORY             # Share history between all sessions.
+setopt HIST_EXPIRE_DUPS_FIRST    # Expire a duplicate event first when trimming history.
+setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS      # Delete an old recorded event if a new event is a duplicate.
+setopt HIST_FIND_NO_DUPS         # Do not display a previously found event.
+setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
+setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
+setopt HIST_VERIFY               # Do not execute immediately upon history expansion.
 
 # misc options
 unsetopt beep
 bindkey -e
-
 
 # completion
 autoload -Uz compinit
@@ -19,13 +19,9 @@ compinit
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors '=*=34'
 
-# prompt
-autoload -Uz vcs_info
-precmd() { vcs_info }
-zstyle ':vcs_info:git:*' formats ' %b'
 setopt PROMPT_SUBST
-PROMPT='%F{blue}%~%f %F{green}${vcs_info_msg_0_}%f
-$ '
+source /opt/homebrew/opt/zsh-git-prompt/zshrc.sh
+source $DOTFILES/robbyrussel.zsh-theme
 
 
 # homebrew
@@ -35,22 +31,7 @@ FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 # aliases
 source $DOTFILES/aliases
 
-# plugins
-_zsh_autosuggest_strategy_histdb_top() {
-    local query="
-        select commands.argv from history
-        left join commands on history.command_id = commands.rowid
-        left join places on history.place_id = places.rowid
-        where commands.argv LIKE '$(sql_escape $1)%'
-        group by commands.argv, places.dir
-        order by places.dir != '$(sql_escape $PWD)', count(*) desc
-        limit 1
-    "
-    suggestion=$(_histdb_query "$query")
-}
-ZSH_AUTOSUGGEST_STRATEGY=histdb_top
-HISTDB_TABULATE_CMD=(sed -e $'s/\x1f/\t/g') # needed on macos for zsh-histdb
-source $HOME/.zsh/zsh-histdb/sqlite-history.zsh
+source $DOTFILES/git.zsh
 
 function init_after_vim_mode_plugin() {
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -64,9 +45,17 @@ function init_after_vim_mode_plugin() {
 zvm_after_init_commands+=(init_after_vim_mode_plugin)
 
 source $HOMEBREW_PREFIX/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
-autoload -Uz add-zsh-hook
 eval "$(zoxide init zsh)"
 
 # sdkman
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# volta
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# python
+# export PATH="$HOMEBREW_PREFIX/opt/python@3.11/libexec/bin:$PATH"
+
+typeset -U PATH
