@@ -3,9 +3,9 @@ local hyper = {"ctrl"}
 
 -- define your own shortcut list here
 local windows = {
-	['1'] = "IntelliJ IDEA",
+	['1'] = "IntelliJ IDEA Ultimate",
 	['2'] = "Alacritty",
-	['3'] = "Firefox",
+	['3'] = "Chrome",
 	-- 4 = "Wrike for Mac",
 	['4'] = "TablePlus",
 	['5'] = "Code",
